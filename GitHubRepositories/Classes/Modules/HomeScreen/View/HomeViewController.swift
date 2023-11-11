@@ -38,13 +38,15 @@ class HomeViewController: UIViewController {
     }
     
     // MARK: - UI Configurations
-    private func setupTableView(){
+    private 
+    func setupTableView(){
         tableView.separatorStyle = .none
         tableView.register(RepositoryCell.nib, forCellReuseIdentifier: RepositoryCell.identifier)
     }
     
     // MARK: - Binding
-    private func bindInputs(){
+    private 
+    func bindInputs(){
         viewModel.input.viewDidLoad.onNext(())
         
         tableView.rx.modelSelected(RepositoryCellViewModel.self)
@@ -59,7 +61,8 @@ class HomeViewController: UIViewController {
             .disposed(by: bag)
     }
     
-    private func bindOutputs(){
+    private 
+    func bindOutputs(){
         viewModel.output
             .repositories
             .drive(tableView.rx.items(cellIdentifier: RepositoryCell.identifier, cellType: RepositoryCell.self)) { index, cellViewModel, cell in
@@ -67,7 +70,4 @@ class HomeViewController: UIViewController {
             }
             .disposed(by: bag)
     }
-
-
-
 }

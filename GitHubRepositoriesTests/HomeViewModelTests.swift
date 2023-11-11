@@ -6,30 +6,91 @@
 //
 
 import XCTest
+import RxSwift
+import RxCocoa
+
+@testable import GitHubRepositories
 
 final class HomeViewModelTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    func testFetchRepositories() async {
+        let viewModel = HomeViewModel()
+        viewModel.networkManager = MockNetworkManager()
+        
+        do {
+            try await viewModel.fetchRepositories()
+            XCTAssertEqual(viewModel.repositoriesCount, 2)
+        } catch {
+            XCTFail("Unexpected error: \(error)")
         }
     }
+    
+    func testConfigureRepositoriesCells() async {
+        let viewModel = HomeViewModel()
+        viewModel.networkManager = MockNetworkManager()
+        
+        do {
+            try await viewModel.fetchRepositories()
+            await viewModel.configureRepositoriesCells([Repository(id: 0,
+                                                                   name: "Repo2",
+                                                                   full_name: "repoFullName2",
+                                                                   description: "desc",
+                                                                   owner: Repository.Owner.init(login: "lign", id: 0, avatar_url: "avatar_url"),
+                                                                   created_at: "createAt",
+                                                                   stargazers_count: 15,
+                                                                   watchers_count: 25,
+                                                                   forks_count: 2
+                                                 )])
+            XCTAssertEqual(viewModel.repositoriesCount, 1)
+        } catch {
+            XCTFail("Unexpected error: \(error)")
+        }
+    }
+}
 
+
+class MockNetworkManager: NetworkManagerProtocol {
+    
+    var shouldThrowError: Bool = false
+    
+    func fetchRepositoryList() async throws -> [Repository] {
+        if shouldThrowError {
+            throw NSError(domain: "TestErrorDomain", code: 123, userInfo: nil)
+        } else {
+            //some dummy repositories for testing
+            return [Repository(id: 0,
+                               name: "Repo1",
+                               full_name: "repoFullName1",
+                               description: "desc",
+                               owner: Repository.Owner.init(login: "lign", id: 0, avatar_url: "avatar_url"),
+                               created_at: "createAt",
+                               stargazers_count: 15,
+                               watchers_count: 25,
+                               forks_count: 2
+                              ),
+                    Repository(id: 0,
+                               name: "Repo2",
+                               full_name: "repoFullName2",
+                               description: "desc",
+                               owner: Repository.Owner.init(login: "lign", id: 0, avatar_url: "avatar_url"),
+                               created_at: "createAt",
+                               stargazers_count: 15,
+                               watchers_count: 25,
+                               forks_count: 2
+                              )]
+        }
+    }
+    
+    func fetchRepositoryDetails(id: Int) async throws -> GitHubRepositories.Repository {
+        return Repository(id: 0,
+                          name: "Repo2",
+                          full_name: "repoFullName2",
+                          description: "desc",
+                          owner: Repository.Owner.init(login: "lign", id: 0, avatar_url: "avatar_url"),
+                          created_at: "createAt",
+                          stargazers_count: 15,
+                          watchers_count: 25,
+                          forks_count: 2
+        )
+    }
 }

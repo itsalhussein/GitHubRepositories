@@ -42,11 +42,13 @@ class RepositoryDetailsViewController: UIViewController {
     }
     
     // MARK: - Binding
-    private func bindInputs(){
+    private 
+    func bindInputs(){
         viewModel.input.viewDidLoad.onNext(())
     }
     
-    private func bindOutputs(){
+    private 
+    func bindOutputs(){
         viewModel.output.repositoryDetails
             .drive(onNext: { [weak self] repositoryDetails in
                 guard let self = self else { return }
@@ -88,7 +90,5 @@ class RepositoryDetailsViewController: UIViewController {
                 }
             })
             .disposed(by: bag)
-        
     }
-
 }
