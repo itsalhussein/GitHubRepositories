@@ -1,14 +1,13 @@
 //
-//  GitHubRepositoriesTests.swift
+//  HomeViewModelTests.swift
 //  GitHubRepositoriesTests
 //
-//  Created by Hussein Anwar on 10/11/2023.
+//  Created by Hussein Anwar on 11/11/2023.
 //
 
 import XCTest
-@testable import GitHubRepositories
 
-final class GitHubRepositoriesTests: XCTestCase {
+final class HomeViewModelTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
